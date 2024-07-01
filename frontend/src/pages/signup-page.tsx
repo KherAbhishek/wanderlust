@@ -11,7 +11,10 @@ import { AxiosError, isAxiosError } from 'axios';
 import axiosInstance from '@/helpers/axios-instance';
 import userState from '@/utils/user-state';
 import ThemeToggle from '@/components/theme-toggle-button';
-function signup() {
+import { useState } from 'react';
+import EyeIcon from '@/assets/svg/eye.svg';
+import EyeOffIcon from '@/assets/svg/eye-off.svg';
+function Signup() {
   const navigate = useNavigate();
   const {
     register,
@@ -21,6 +24,7 @@ function signup() {
     setError,
   } = useForm<TSignUpSchema>({ resolver: zodResolver(signUpSchema) });
 
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const onSubmit = async (data: FieldValues) => {
     try {
       const res = axiosInstance.post('/api/auth/email-password/signup', data);
@@ -63,7 +67,7 @@ function signup() {
     <div className="flex-grow cursor-default bg-white py-4 dark:bg-dark-card">
       <div className="m-4 mb-4 flex justify-center">
         <div className="flex w-full items-center justify-center">
-          <h2 className="w-3/4 pl-48 text-center text-lg font-bold text-black dark:text-dark-primary sm:text-xl">
+          <h2 className="text-center text-lg font-bold text-black dark:text-dark-primary w-2/4 pl-2 sm:text-xl md:w-3/4 md:pl-48">
             Sign up to WanderLust
           </h2>
           <div className="flex items-center justify-end px-4 sm:px-20">
@@ -106,24 +110,49 @@ function signup() {
               <p className="p-3 text-xs text-red-500">{`${errors.email.message}`}</p>
             )}
           </div>
-          <div className="mb-2">
+
+          {/*password*/}
+          <div className="relative mb-2">
             <input
               {...register('password')}
-              type="password"
+              type={passwordVisible ? 'text' : 'password'}
               placeholder="Password"
               className="w-full rounded-lg bg-zinc-100 p-3 font-normal placeholder:text-sm dark:bg-dark-field dark:text-dark-textInField"
             />
+            <button
+              type="button"
+              onClick={() => setPasswordVisible(!passwordVisible)}
+              className="absolute inset-y-0 right-0 flex items-center pr-3 text-sm leading-5"
+            >
+              <img
+                src={passwordVisible ? EyeOffIcon : EyeIcon}
+                alt="Toggle Password Visibility"
+                className="h-5 w-5"
+              />
+            </button>
             {errors.password && (
               <p className="p-3 text-xs text-red-500">{`${errors.password.message}`}</p>
             )}
           </div>
-          <div className="mb-4">
+
+          <div className="relative mb-4">
             <input
               {...register('confirmPassword')}
-              type="password"
+              type={passwordVisible ? 'text' : 'password'}
               placeholder="Confirm Password"
               className="w-full rounded-lg bg-zinc-100 p-3 font-normal placeholder:text-sm dark:bg-dark-field dark:text-dark-textInField"
             />
+            <button
+              type="button"
+              onClick={() => setPasswordVisible(!passwordVisible)}
+              className="absolute inset-y-0 right-0 flex items-center pr-3 text-sm leading-5"
+            >
+              <img
+                src={passwordVisible ? EyeOffIcon : EyeIcon}
+                alt="Toggle Confirm Password Visibility"
+                className="h-5 w-5"
+              />
+            </button>
             {errors.confirmPassword && (
               <p className="p-3 text-xs text-red-500">{`${errors.confirmPassword.message}`}</p>
             )}
@@ -147,7 +176,6 @@ function signup() {
 
           {/* <span>OR</span> */}
         </div>
-
         {/* <Link
           to={'/google-auth'}
           className="flex w-full items-center justify-center space-x-2 rounded-lg border-2 border-b-4 border-gray-300 p-3 text-center hover:bg-gray-50 dark:border-gray-700 dark:text-dark-primary dark:hover:bg-gray-700 md:w-3/4 lg:w-2/5"
@@ -168,4 +196,4 @@ function signup() {
   );
 }
 
-export default signup;
+export default Signup;
